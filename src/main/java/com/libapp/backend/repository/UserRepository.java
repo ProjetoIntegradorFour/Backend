@@ -9,6 +9,6 @@ import com.libapp.backend.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username = :username")
-    Optional<User> findByUsername(String username);
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.cpf = :cpf")
+    Optional<User> findByUsername(String cpf);
 }

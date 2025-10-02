@@ -16,31 +16,32 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtils {
+
     @Value("${jwt.secret}")
     private String jwtSecret;
-    
+
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
-    
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
-    
+
     public String generateJwtToken(UserDetailsImpl userPrincipal) {
         List<String> roles = userPrincipal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        
+
         return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
+                .setSubject(userPrincipal.getCpf())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
                 .signWith(getSigningKey())
                 .compact();
     }
-    
-    public String getUserNameFromJwtToken(String token) {
+
+    public String getCpfFromJwtToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -48,7 +49,7 @@ public class JwtUtils {
                 .getBody()
                 .getSubject();
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<String> getRolesFromJwtToken(String token) {
         return (List<String>) Jwts.parserBuilder()
@@ -58,7 +59,7 @@ public class JwtUtils {
                 .getBody()
                 .get("roles");
     }
-    
+
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parserBuilder()

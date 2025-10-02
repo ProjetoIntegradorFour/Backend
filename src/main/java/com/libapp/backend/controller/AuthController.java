@@ -47,7 +47,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getCpf(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -62,11 +62,11 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
-        if (userRepository.findByUsername(signUpRequest.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Error: Username is already taken!");
+        if (userRepository.findByUsername(signUpRequest.getCpf()).isPresent()) {
+            return ResponseEntity.badRequest().body("Error: User CPF is already taken!");
         }
 
-        User user = new User(signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()));
+        User user = new User(signUpRequest.getUsername(), signUpRequest.getCpf(), encoder.encode(signUpRequest.getPassword()));
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -100,15 +100,15 @@ public class AuthController {
 
     public static class LoginRequest {
 
-        private String username;
+        private String cpf;
         private String password;
 
-        public String getUsername() {
-            return username;
+        public String getCpf() {
+            return cpf;
         }
 
-        public void setUsername(String username) {
-            this.username = username;
+        public void setCpf(String cpf) {
+            this.cpf = cpf;
         }
 
         public String getPassword() {
@@ -123,6 +123,7 @@ public class AuthController {
     public static class SignupRequest {
 
         private String username;
+        private String cpf;
         private String password;
         private Set<String> role;
 
@@ -132,6 +133,14 @@ public class AuthController {
 
         public void setUsername(String username) {
             this.username = username;
+        }
+
+        public String getCpf() {
+            return cpf;
+        }
+
+        public void setCpf(String cpf) {
+            this.cpf = cpf;
         }
 
         public String getPassword() {

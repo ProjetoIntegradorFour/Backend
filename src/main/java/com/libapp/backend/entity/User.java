@@ -25,6 +25,8 @@ public class User {
     @Column(unique = true)
     private String username;
 
+    private String cpf;
+
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -36,8 +38,9 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String cpf, String password) {
         this.username = username;
+        this.cpf = cpf;
         this.password = password;
     }
 
@@ -55,6 +58,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public String getPassword() {
