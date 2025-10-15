@@ -41,6 +41,7 @@ public class RouterController {
         }
 
         String role = authentication.getAuthorities().iterator().next().getAuthority();
+        System.out.println("Auth role = " + role);
         return ResponseEntity.ok(ROLE_ACCESS.getOrDefault(role, List.of()));
     }
 }
