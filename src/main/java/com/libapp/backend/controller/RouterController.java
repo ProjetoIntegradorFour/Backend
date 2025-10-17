@@ -7,13 +7,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/test")
-public class TestController {    
+public class RouterController {
+
+    @GetMapping("/all")
+    public String allAccess() {
+        return "Public Content.";
+    }
+
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
     public String userAccess() {
         return "User Content.";
     }
-    
+
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public String adminAccess() {
