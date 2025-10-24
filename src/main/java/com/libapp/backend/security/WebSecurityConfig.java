@@ -1,6 +1,7 @@
 package com.libapp.backend.security;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,9 +56,10 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081", "http://10.109.3.52:8081", "http://localhost:3000", "http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 
@@ -72,7 +74,7 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/**", "/h2-console/**", "/api/test/all").permitAll()
+                .requestMatchers("/api/test/all", "/h2-console/**", "/api/auth/**", "/api/collections/**").permitAll()
                 .requestMatchers("/api/test/admin").hasRole("ADMIN")
                 .requestMatchers("/api/test/user").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()

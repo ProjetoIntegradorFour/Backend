@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/test")
-public class RouterController {
+public class TestController {
 
     @GetMapping("/all")
     public String allAccess() {
