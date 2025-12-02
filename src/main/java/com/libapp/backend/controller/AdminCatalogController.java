@@ -2,6 +2,7 @@ package com.libapp.backend.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import com.libapp.backend.service.CopyService;
 @RestController
 @RequestMapping("/admin/catalog")
 @CrossOrigin
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminCatalogController {
 
     private final CatalogService catalogService;
@@ -28,6 +30,11 @@ public class AdminCatalogController {
     public AdminCatalogController(CatalogService catalogService, CopyService copyService) {
         this.catalogService = catalogService;
         this.copyService = copyService;
+    }
+
+    @PostMapping("/fetch/{isbn}")
+    public Catalog fetchAndInsert(@PathVariable String isbn) {
+        return catalogService.fetchFromIsbnApi(isbn);
     }
 
     @PostMapping("/{isbn}/copies")

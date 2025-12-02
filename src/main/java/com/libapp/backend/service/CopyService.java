@@ -18,11 +18,9 @@ public class CopyService {
     private static final Logger log = LoggerFactory.getLogger(CopyService.class);
 
     private final CopyRepository copyRepository;
-    private final CatalogService catalogService;
 
     public CopyService(CopyRepository copyRepository, CatalogService catalogService) {
         this.copyRepository = copyRepository;
-        this.catalogService = catalogService;
     }
 
     public List<Copy> findByIsbn(String isbn) {
@@ -30,10 +28,7 @@ public class CopyService {
     }
 
     public long countAvailableCopies(String isbn) {
-        List<Copy> copies = copyRepository.findByCatalogIsbn(isbn);
-        return copies.stream()
-                .filter(copy -> copy.getStatus() == CopyStatus.AVAILABLE)
-                .count();
+        return copyRepository.countByCatalogIsbnAndStatus(isbn, CopyStatus.AVAILABLE);
     }
 
     public Copy save(Copy copy) {

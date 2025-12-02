@@ -15,4 +15,8 @@ public interface CopyRepository extends JpaRepository<Copy, Long> {
 
     long countByCatalogIsbnAndStatus(String isbn, CopyStatus status);
 
+    void deleteByCatalogIsbn(String isbn);
+
+    void deleteByIdIn(List<Long> ids);
+
 }

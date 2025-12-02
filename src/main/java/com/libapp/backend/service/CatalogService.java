@@ -38,8 +38,7 @@ public class CatalogService {
     }
 
     public void delete(String isbn) {
-        Optional<Catalog> catalog = catalogRepository.findByIsbn(isbn);
-        catalog.ifPresent(catalogRepository::delete);
+        catalogRepository.deleteByIsbn(isbn);
     }
 
     public Catalog fetchFromIsbnApi(String isbn) {

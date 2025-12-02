@@ -16,4 +16,7 @@ public interface CatalogRepository extends JpaRepository<Catalog, Long> {
     List<Catalog> findByTitleContainingIgnoreCase(String title);
 
     List<Catalog> findByAuthorsContainingIgnoreCase(String author);
+
+    void deleteByIsbn(String isbn);
+    
 }

@@ -2,13 +2,21 @@ package com.libapp.backend.entity;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "catalog")
 public class Catalog {
@@ -17,9 +25,12 @@ public class Catalog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "ISBN é obrigatório")
+    @Size(min = 10, max = 13, message = "ISBN deve ter entre 10 e 13 caracteres")
     @Column(unique = true, nullable = false, length = 20)
     private String isbn;
 
+    @NotBlank(message = "Título é obrigatório")
     private String title;
 
     private String titlePt;
@@ -40,6 +51,13 @@ public class Catalog {
     private boolean isAdminOverridden = false;
 
     private LocalDateTime lastSyncedAt;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     // Constructors
     public Catalog() {
@@ -126,12 +144,12 @@ public class Catalog {
         this.description = description;
     }
 
-    public boolean isAdminOverridden() {
+    public boolean isIsAdminOverridden() {
         return isAdminOverridden;
     }
 
-    public void setAdminOverridden(boolean adminOverridden) {
-        isAdminOverridden = adminOverridden;
+    public void setIsAdminOverridden(boolean isAdminOverridden) {
+        this.isAdminOverridden = isAdminOverridden;
     }
 
     public LocalDateTime getLastSyncedAt() {
@@ -141,4 +159,21 @@ public class Catalog {
     public void setLastSyncedAt(LocalDateTime lastSyncedAt) {
         this.lastSyncedAt = lastSyncedAt;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 }

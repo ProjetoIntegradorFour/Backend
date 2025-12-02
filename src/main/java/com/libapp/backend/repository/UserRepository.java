@@ -11,4 +11,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.cpf = :cpf")
     Optional<User> findByUsername(String cpf);
+    
 }
