@@ -4,5 +4,9 @@ public enum CopyStatus {
     AVAILABLE,
     LOANED,
     RESERVED,
-    LOST
+    LOST;
+
+    public boolean isAvailable() {
+        return this == AVAILABLE;
+    }
 }

@@ -1,12 +1,21 @@
 package com.libapp.backend.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.libapp.backend.entity.Catalog;
 import com.libapp.backend.entity.Copy;
 import com.libapp.backend.service.CatalogService;
 import com.libapp.backend.service.CopyService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/catalog")
@@ -21,13 +30,14 @@ public class AdminCatalogController {
         this.copyService = copyService;
     }
 
-    // Fetch metadata from ISBN API and save
-    @PostMapping("/fetch/{isbn}")
-    public Catalog fetchAndInsert(@PathVariable String isbn) {
-        return catalogService.fetchFromIsbnApi(isbn);
+    @PostMapping("/{isbn}/copies")
+    public Copy addCopy(@PathVariable String isbn, @RequestBody Copy copy) {
+        Catalog catalog = catalogService.findByIsbn(isbn)
+                .orElseThrow(() -> new RuntimeException("Catalog not found for ISBN: " + isbn));
+        copy.setCatalog(catalog);
+        return copyService.save(copy);
     }
 
-    // CRUD
     @PostMapping
     public Catalog create(@RequestBody Catalog catalog) {
         return catalogService.save(catalog);
@@ -44,16 +54,11 @@ public class AdminCatalogController {
         catalogService.delete(isbn);
     }
 
-    // Copies
-    @PostMapping("/{isbn}/copies")
-    public Copy addCopy(@PathVariable String isbn, @RequestBody Copy copy) {
-        Catalog catalog = catalogService.findByIsbn(isbn);
-        copy.setCatalog(catalog);
-        return copyService.save(copy);
-    }
-
     @GetMapping("/{isbn}/copies")
     public List<Copy> listCopies(@PathVariable String isbn) {
+        catalogService.findByIsbn(isbn)
+                .orElseThrow(() -> new RuntimeException("Catalog not found for ISBN: " + isbn));
+
         return copyService.findByIsbn(isbn);
     }
 }

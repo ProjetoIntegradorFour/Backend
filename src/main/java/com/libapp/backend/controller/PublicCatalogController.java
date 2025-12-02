@@ -1,14 +1,17 @@
 package com.libapp.backend.controller;
 
-import com.libapp.backend.entity.Catalog;
-import com.libapp.backend.entity.Copy;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.libapp.backend.service.CatalogService;
 import com.libapp.backend.service.CopyService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/catalog")
@@ -25,19 +28,17 @@ public class PublicCatalogController {
 
     @GetMapping
     public List<Map<String, Object>> getPublicCatalog() {
-        return catalogService.findAll().stream().map(c -> {
-            List<Copy> copies = copyService.findByIsbn(c.getIsbn());
-            long available = copies.stream()
-                    .filter(copy -> copy.getStatus().isAvailable())
-                    .count();
+        return catalogService.findAll().stream().map(catalog -> {
+            long available = copyService.countAvailableCopies(catalog.getIsbn());
 
-            return Map.of(
-                    "isbn", c.getIsbn(),
-                    "title", c.getTitle(),
-                    "author", c.getAuthor(),
-                    "cover", c.getCoverUrl(),
-                    "availableCopies", available
-            );
+            Map<String, Object> map = new HashMap<>();
+            map.put("isbn", catalog.getIsbn());
+            map.put("title", catalog.getTitle());
+            map.put("author", catalog.getAuthors());
+            map.put("cover", catalog.getCoverUrl());
+            map.put("availableCopies", available);
+
+            return map;
         }).collect(Collectors.toList());
     }
 }
