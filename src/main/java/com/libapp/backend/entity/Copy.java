@@ -18,6 +18,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -28,13 +31,17 @@ public class Copy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Catalog é obrigatório")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catalog_id", nullable = false)
     private Catalog catalog;
 
+    @NotNull(message = "Status é obrigatório")
     @Enumerated(EnumType.STRING)
     private CopyStatus status = CopyStatus.AVAILABLE;
 
+    @NotBlank(message = "Localização na estante é obrigatória")
+    @Size(min = 2, max = 20, message = "Localização deve ter entre 2 e 20 caracteres")
     private String shelfId;
 
     @CreatedDate

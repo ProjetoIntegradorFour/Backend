@@ -2,6 +2,8 @@ package com.libapp.backend.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,8 @@ import com.libapp.backend.entity.Catalog;
 import com.libapp.backend.entity.Copy;
 import com.libapp.backend.service.CatalogService;
 import com.libapp.backend.service.CopyService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/admin/catalog")
@@ -38,22 +42,31 @@ public class AdminCatalogController {
     }
 
     @PostMapping("/{isbn}/copies")
-    public Copy addCopy(@PathVariable String isbn, @RequestBody Copy copy) {
+    public ResponseEntity<Copy> addCopy(
+            @PathVariable String isbn,
+            @Valid @RequestBody Copy copy) {
+
         Catalog catalog = catalogService.findByIsbn(isbn)
                 .orElseThrow(() -> new RuntimeException("Catalog not found for ISBN: " + isbn));
         copy.setCatalog(catalog);
-        return copyService.save(copy);
+        Copy savedCopy = copyService.save(copy);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCopy);
     }
 
     @PostMapping
-    public Catalog create(@RequestBody Catalog catalog) {
-        return catalogService.save(catalog);
+    public ResponseEntity<Catalog> create(@Valid @RequestBody Catalog catalog) {
+        Catalog savedCatalog = catalogService.save(catalog);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCatalog);
     }
 
     @PutMapping("/{isbn}")
-    public Catalog update(@PathVariable String isbn, @RequestBody Catalog catalog) {
+    public ResponseEntity<Catalog> update(
+            @PathVariable String isbn,
+            @Valid @RequestBody Catalog catalog) {
+
         catalog.setIsbn(isbn);
-        return catalogService.save(catalog);
+        Catalog updatedCatalog = catalogService.save(catalog);
+        return ResponseEntity.ok(updatedCatalog);
     }
 
     @DeleteMapping("/{isbn}")

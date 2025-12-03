@@ -19,7 +19,7 @@ public class CopyService {
 
     private final CopyRepository copyRepository;
 
-    public CopyService(CopyRepository copyRepository, CatalogService catalogService) {
+    public CopyService(CopyRepository copyRepository) {
         this.copyRepository = copyRepository;
     }
 

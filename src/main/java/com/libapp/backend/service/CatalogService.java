@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.libapp.backend.dto.CatalogSummaryDTO;
 import com.libapp.backend.entity.Catalog;
 import com.libapp.backend.repository.CatalogRepository;
+import com.libapp.backend.exception.ValidationException;
 
 @Service
 @Transactional
@@ -43,14 +45,24 @@ public class CatalogService {
 
     public Catalog fetchFromIsbnApi(String isbn) {
         if (isbn == null || isbn.trim().isEmpty()) {
-            throw new RuntimeException("ISBN não pode ser vazio");
+            throw new ValidationException("isbn", "ISBN não pode ser vazio", "ISBN_EMPTY");
+        }
+
+        String cleanIsbn = isbn.replaceAll("[^0-9]", "");
+        if (cleanIsbn.length() != 10 && cleanIsbn.length() != 13) {
+            throw new ValidationException("isbn", "ISBN deve ter 10 ou 13 dígitos", "ISBN_INVALID");
         }
 
         if (catalogRepository.existsByIsbn(isbn)) {
-            throw new RuntimeException("Catálogo com ISBN " + isbn + " já existe");
+            throw new ValidationException("isbn",
+                    "Catálogo com ISBN " + isbn + " já existe", "ISBN_DUPLICATE");
         }
 
         Catalog metadata = isbnLookupService.fetchMetadata(isbn);
         return catalogRepository.save(metadata);
+    }
+
+    public List<CatalogSummaryDTO> findAllCatalogSummaries() {
+        return catalogRepository.findAllCatalogSummaries();
     }
 }

@@ -1,64 +1,33 @@
-INSERT INTO books (cdd, titulo, autor) VALUES 
-('820', 'O Alquimista', 'Paulo Coelho'),
-('839', 'O Pequeno Príncipe', 'Antoine de Saint-Exupéry'),
-('823', 'Harry Potter e a Pedra Filosofal', 'J. K. Rowling'),
-('820', 'Harry Potter e a Câmara Secreta', 'J. K. Rowling'),
-('220', 'A Cabana', 'William P. Young'),
-('150', 'O Vendedor de Sonhos', 'Augusto Cury'),
-('150', 'O Código da Inteligência', 'Augusto Cury'),
-('853', 'Memórias Póstumas de Brás Cubas', 'Machado de Assis'),
-('853', 'Dom Casmurro', 'Machado de Assis'),
-('869', 'Cem Anos de Solidão', 'Gabriel García Márquez'),
-('823', 'O Código Da Vinci', 'Dan Brown'),
-('823', 'Anjos e Demônios', 'Dan Brown'),
-('853', 'A Hora da Estrela', 'Clarice Lispector'),
-('870', 'Gabriela, Cravo e Canela', 'Jorge Amado'),
-('869', 'Os Homens que Não Amavam as Mulheres', 'Stieg Larsson'),
-('850', 'A Culpa é das Estrelas', 'John Green'),
-('158', 'Como Fazer Amigos e Influenciar Pessoas', 'Dale Carnegie'),
-('303', 'Sapiens: Uma Breve História da Humanidade', 'Yuval Noah Harari'),
-('650', 'Pai Rico, Pai Pobre', 'Robert Kiyosaki'),
-('149', 'A Sutil Arte de Ligar o F*da-se', 'Mark Manson'),
-('820', 'Brida', 'Paulo Coelho'),
-('821', 'Onze Minutos', 'Paulo Coelho'),
-('850', 'O Menino do Pijama Listrado', 'John Boyne'),
-('850', 'O Diário de Anne Frank', 'Anne Frank'),
-('330', 'Economia em Uma Página', 'Autor Teste'),
-('158', 'O Poder do Hábito', 'Charles Duhigg'),
-('296', 'O Caminho do Peregrino', 'Autor Teste'),
-('850', 'A Garota no Trem', 'Paula Hawkins'),
-('850', 'Garota Exemplar', 'Gillian Flynn'),
-('305', '12 Regras para a Vida', 'Jordan B. Peterson'),
-('152', 'Inteligência Emocional', 'Daniel Goleman'),
-('300', 'Os Sertões', 'Euclides da Cunha'),
-('853', 'Capitães da Areia', 'Jorge Amado'),
-('853', 'Dona Flor e Seus Dois Maridos', 'Jorge Amado'),
-('870', 'Vidas Secas', 'Graciliano Ramos'),
-('853', 'O Cortiço', 'Aluísio Azevedo'),
-('821', 'O Primo Basílio', 'Eça de Queirós'),
-('850', 'Cinquenta Tons de Cinza', 'E. L. James'),
-('001', 'Introdução à Programação', 'Autor Teste'),
-('540', 'Química: Conceitos e Aplicações', 'Autor Teste'),
-('153', 'Mindset: A Nova Psicologia do Sucesso', 'Carol S. Dweck'),
-('636', 'O Homem Mais Rico da Babilônia', 'George S. Clason'),
-('151', 'Psicologia para Leigos', 'Autor Teste'),
-('398', 'Mitos e Lendas Brasileiras', 'Vários Autores'),
-('821', 'Os Maias', 'Eça de Queirós'),
-('853', 'Memórias de um Sargento de Milícias', 'Manuel Antônio de Almeida'),
-('821', 'Iracema', 'José de Alencar'),
-('850', 'O Segredo', 'Rhonda Byrne'),
-('808', 'Como Escrever Melhor', 'Autor Teste'),
-('860', 'Poesia Brasileira Contemporânea: Antologia', 'Organizador Teste'),
-('940', 'História do Brasil', 'Autor Teste'),
-('330', 'Desenvolvimento Pessoal e Carreira', 'Autor Teste'),
-('741', 'Cartoon & Quadrinhos: Técnicas e Histórias', 'Autor Teste'),
-('850', 'A Menina que Roubava Livros', 'Markus Zusak'),
-('853', 'Meu Pé de Laranja Lima', 'José Mauro de Vasconcelos'),
-('821', 'O Guarani', 'José de Alencar'),
-('170', 'Religião e Espiritualidade: Textos Selecionados', 'Organizador Teste'),
-('641', 'Culinária Brasileira: Receitas Tradicionais', 'Chef Teste'),
-('860', 'Poesias de Carlos Drummond de Andrade', 'Carlos Drummond de Andrade'),
-('860', 'Poesias de Vinicius de Moraes', 'Vinicius de Moraes'),
-('821', 'A Moreninha', 'Joaquim Manuel de Macedo'),
-('853', 'A Rosa do Povo', 'Carlos Drummond de Andrade'),
-('940', 'História Geral: Antigas Civilizações', 'Autor Teste');
+-- Clear existing data
+DELETE FROM copy;
+DELETE FROM catalog;
+DELETE FROM user_roles;
+DELETE FROM users;
+DELETE FROM roles;
+
+-- Insert default roles
+INSERT INTO roles (id, name) VALUES 
+(1, 'ROLE_USER'),
+(2, 'ROLE_ADMIN');
+
+-- Insert test admin user (password: "admin123")
+INSERT INTO users (id, username, cpf, password) VALUES 
+(1, 'Administrador', '12345678900', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKNS3Hpu');
+
+-- Assign admin role
+INSERT INTO user_roles (user_id, role_id) VALUES (1, 2);
+
+-- Insert test catalog entries
+INSERT INTO catalog (id, isbn, title, title_pt, authors, publisher, published_date, language, cover_url, description, is_admin_overridden, last_synced_at, created_at, updated_at) VALUES
+(1, '9788535902775', '1984', '1984', 'George Orwell', 'Companhia das Letras', '2009-06-01', 'pt', 'https://covers.openlibrary.org/b/isbn/9788535902775-L.jpg', 'Um clássico da literatura distópica', false, NOW(), NOW(), NOW()),
+(2, '9788571640353', 'Dom Casmurro', 'Dom Casmurro', 'Machado de Assis', 'Ática', '1998-01-01', 'pt', 'https://covers.openlibrary.org/b/isbn/9788571640353-L.jpg', 'Romance brasileiro do século XIX', false, NOW(), NOW(), NOW()),
+(3, '9788544001820', 'O Alquimista', 'O Alquimista', 'Paulo Coelho', 'Paralela', '2017-01-01', 'pt', 'https://covers.openlibrary.org/b/isbn/9788544001820-L.jpg', 'Uma fábula sobre seguir seus sonhos', false, NOW(), NOW(), NOW());
+
+-- Insert test copies
+INSERT INTO copy (id, catalog_id, status, shelf_id, created_at, updated_at) VALUES
+(1, 1, 'AVAILABLE', 'A1-001', NOW(), NOW()),
+(2, 1, 'LOANED', 'A1-002', NOW(), NOW()),
+(3, 2, 'AVAILABLE', 'B2-001', NOW(), NOW()),
+(4, 2, 'AVAILABLE', 'B2-002', NOW(), NOW()),
+(5, 3, 'RESERVED', 'C3-001', NOW(), NOW()),
+(6, 3, 'AVAILABLE', 'C3-002', NOW(), NOW());
