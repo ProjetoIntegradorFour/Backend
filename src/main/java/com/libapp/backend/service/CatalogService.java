@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.libapp.backend.dto.CatalogSummaryDTO;
 import com.libapp.backend.entity.Catalog;
-import com.libapp.backend.repository.CatalogRepository;
 import com.libapp.backend.exception.ValidationException;
+import com.libapp.backend.repository.CatalogRepository;
 
 @Service
 @Transactional

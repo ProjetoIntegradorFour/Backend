@@ -37,15 +37,13 @@ public class AdminCatalogController {
     }
 
     @PostMapping("/fetch/{isbn}")
-    public Catalog fetchAndInsert(@PathVariable String isbn) {
-        return catalogService.fetchFromIsbnApi(isbn);
+    public ResponseEntity<Catalog> fetchAndInsert(@PathVariable String isbn) {
+        Catalog catalog = catalogService.fetchFromIsbnApi(isbn);
+        return ResponseEntity.status(HttpStatus.CREATED).body(catalog);
     }
 
     @PostMapping("/{isbn}/copies")
-    public ResponseEntity<Copy> addCopy(
-            @PathVariable String isbn,
-            @Valid @RequestBody Copy copy) {
-
+    public ResponseEntity<Copy> addCopy(@PathVariable String isbn, @Valid @RequestBody Copy copy) {
         Catalog catalog = catalogService.findByIsbn(isbn)
                 .orElseThrow(() -> new RuntimeException("Catalog not found for ISBN: " + isbn));
         copy.setCatalog(catalog);
@@ -60,25 +58,24 @@ public class AdminCatalogController {
     }
 
     @PutMapping("/{isbn}")
-    public ResponseEntity<Catalog> update(
-            @PathVariable String isbn,
-            @Valid @RequestBody Catalog catalog) {
-
+    public ResponseEntity<Catalog> update(@PathVariable String isbn, @Valid @RequestBody Catalog catalog) {
         catalog.setIsbn(isbn);
         Catalog updatedCatalog = catalogService.save(catalog);
         return ResponseEntity.ok(updatedCatalog);
     }
 
     @DeleteMapping("/{isbn}")
-    public void delete(@PathVariable String isbn) {
+    public ResponseEntity<Void> delete(@PathVariable String isbn) {
         catalogService.delete(isbn);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{isbn}/copies")
-    public List<Copy> listCopies(@PathVariable String isbn) {
+    public ResponseEntity<List<Copy>> listCopies(@PathVariable String isbn) {
         catalogService.findByIsbn(isbn)
                 .orElseThrow(() -> new RuntimeException("Catalog not found for ISBN: " + isbn));
 
-        return copyService.findByIsbn(isbn);
+        List<Copy> copies = copyService.findByIsbn(isbn);
+        return ResponseEntity.ok(copies);
     }
 }
