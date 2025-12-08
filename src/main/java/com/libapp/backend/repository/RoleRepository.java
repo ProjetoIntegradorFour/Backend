@@ -10,4 +10,5 @@ import com.libapp.backend.entity.RoleName;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     Optional<Role> findByName(RoleName name);
+    
 }
