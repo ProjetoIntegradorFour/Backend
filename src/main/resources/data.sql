@@ -10,13 +10,6 @@ INSERT INTO roles (id, name) VALUES
 (1, 'ROLE_USER'),
 (2, 'ROLE_ADMIN');
 
--- Insert test admin user (password: "admin123")
-INSERT INTO users (id, username, cpf, password) VALUES 
-(1, 'Administrador', '12345678900', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKNS3Hpu');
-
--- Assign admin role
-INSERT INTO user_roles (user_id, role_id) VALUES (1, 2);
-
 -- Insert test catalog entries
 INSERT INTO catalog (id, isbn, title, title_pt, authors, publisher, published_date, language, cover_url, description, is_admin_overridden, last_synced_at, created_at, updated_at) VALUES
 (1, '9788535902775', '1984', '1984', 'George Orwell', 'Companhia das Letras', '2009-06-01', 'pt', 'https://covers.openlibrary.org/b/isbn/9788535902775-L.jpg', 'Um clássico da literatura distópica', false, NOW(), NOW(), NOW()),

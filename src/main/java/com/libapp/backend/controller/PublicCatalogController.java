@@ -1,10 +1,11 @@
 package com.libapp.backend.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.libapp.backend.dto.CatalogSummaryDTO;
@@ -22,7 +23,11 @@ public class PublicCatalogController {
     }
 
     @GetMapping
-    public List<CatalogSummaryDTO> getPublicCatalog() {
-        return catalogService.findAllCatalogSummaries();
+    public Page<CatalogSummaryDTO> getPublicCatalog(
+            @RequestParam(required = false) String query,
+            Pageable pageable
+    ) {
+        return catalogService.findPublicCatalog(query, pageable);
     }
+
 }
