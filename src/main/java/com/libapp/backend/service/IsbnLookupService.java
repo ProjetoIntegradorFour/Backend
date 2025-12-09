@@ -86,6 +86,13 @@ public class IsbnLookupService {
 
         catalog.setDescription(description != null ? description : "Sem descrição disponível");
 
+        List<String> subjects = (List<String>) data.get("subjects");
+        if (subjects != null && !subjects.isEmpty()) {
+            catalog.setGenres(String.join(", ", subjects));
+        } else {
+            catalog.setGenres(null);
+        }
+
         catalog.setLastSyncedAt(LocalDateTime.now());
 
         return catalog;
@@ -123,6 +130,7 @@ public class IsbnLookupService {
         catalog.setCoverUrl(null);
         catalog.setLastSyncedAt(LocalDateTime.now());
         catalog.setDescription("Falha ao buscar metadados do OpenLibrary. Título e dados inseridos manualmente.");
+        catalog.setGenres(null);
         return catalog;
     }
 }
