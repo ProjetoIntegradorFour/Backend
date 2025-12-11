@@ -4,33 +4,40 @@ package com.libapp.backend.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.libapp.backend.dto.ProfileResponse;
+import com.libapp.backend.dto.UserUpdateRequest;
+import com.libapp.backend.entity.User;
 import com.libapp.backend.security.UserDetailsImpl;
+import com.libapp.backend.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProfileResponse> profile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        // Extract roles from authorities
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(authority -> authority.getAuthority())
+                .map(auth -> auth.getAuthority())
                 .collect(Collectors.toList());
 
-        // Create the profile response
         ProfileResponse response = new ProfileResponse(
                 userDetails.getId(),
-                userDetails.getUsername(), // This is the name in your UserDetailsImpl
+                userDetails.getUsername(),
                 userDetails.getCpf(),
                 roles);
 
@@ -39,20 +46,68 @@ public class UserController {
 
     @GetMapping("/admin/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<String> all() {
-        return ResponseEntity.ok("You are an admin and can see all users");
-    }
+    public ResponseEntity<List<ProfileResponse>> getAllUsers() {
 
-    @PutMapping("/admin/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<String> update() {
-        return ResponseEntity.ok("You are an admin and can update user data");
+        List<User> users = userService.getAllUsers();
+
+        List<ProfileResponse> response = users.stream()
+                .map(user -> {
+                    List<String> roles = user.getRoles().stream()
+                            .map(role -> role.getName().name())
+                            .collect(Collectors.toList());
+
+                    return new ProfileResponse(
+                            user.getId(),
+                            user.getName(),
+                            user.getCpf(),
+                            roles);
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/admin/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<String> seeone() {
-        return ResponseEntity.ok("You are an admin and can see a specific user data");
+    public ResponseEntity<ProfileResponse> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+
+        List<String> roles = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toList());
+
+        ProfileResponse response = new ProfileResponse(
+                user.getId(),
+                user.getName(),
+                user.getCpf(),
+                roles);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<ProfileResponse> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserUpdateRequest updateRequest) {
+
+        if (updateRequest == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User updatedUser = userService.updateUser(id, updateRequest);
+
+        List<String> roles = updatedUser.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toList());
+
+        ProfileResponse response = new ProfileResponse(
+                updatedUser.getId(),
+                updatedUser.getName(),
+                updatedUser.getCpf(),
+                roles);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/test")
