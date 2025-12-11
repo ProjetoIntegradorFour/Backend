@@ -28,6 +28,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
+
+            logger.debug(
+                    "JWT extracted: " + (jwt != null ? jwt.substring(0, Math.min(20, jwt.length())) + "..." : "null"));
+            logger.debug("Authorization header: " + request.getHeader("Authorization"));
+
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String cpf = jwtUtils.getCpfFromJwtToken(jwt);
                 List<String> roles = jwtUtils.getRolesFromJwtToken(jwt);
@@ -40,7 +45,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                             String roleName = role;
                             if (!roleName.startsWith("ROLE_")) {
                                 roleName = "ROLE_" + roleName.toUpperCase();
-                                logger.warn("Role '" + role + "' missing ROLE_ prefix, normalized to '" + roleName + "'");
+                                logger.warn(
+                                        "Role '" + role + "' missing ROLE_ prefix, normalized to '" + roleName + "'");
                             }
                             return new SimpleGrantedAuthority(roleName);
                         })
@@ -48,13 +54,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 logger.debug("Granted Authorities: " + authorities);
 
-                UsernamePasswordAuthenticationToken authentication
-                        = new UsernamePasswordAuthenticationToken(cpf, null, authorities);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(cpf, null,
+                        authorities);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 logger.debug("Authentication set successfully for CPF: " + cpf);
+            } else {
+                logger.debug("JWT is null or invalid. jwt=" + jwt + ", valid="
+                        + (jwt != null && jwtUtils.validateJwtToken(jwt)));
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: " + e.getMessage(), e);
