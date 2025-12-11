@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:24-jdk
 WORKDIR /app
 
 # Copy Maven descriptor first (helps Docker caching)
