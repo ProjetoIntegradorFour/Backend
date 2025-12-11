@@ -100,6 +100,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> {
                     authz.requestMatchers(
+                            "/health",
                             "/api/test/all",
                             "/api/auth/**",
                             "/api/collections/**",
@@ -115,7 +116,9 @@ public class WebSecurityConfig {
                         authz.requestMatchers("/h2-console/**").permitAll();
                     }
 
-                    authz.requestMatchers(HttpMethod.GET, "/api/users/test").permitAll()
+                    authz
+                            .requestMatchers("/health").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/users/test").permitAll()
                             .requestMatchers("/api/public/**").permitAll()
                             .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                             .requestMatchers("/api/users/admin/**").hasAuthority("ROLE_ADMIN")

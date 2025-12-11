@@ -11,4 +11,4 @@ RUN mvn -e -B clean package -DskipTests
 
 # Run the application
 EXPOSE 8080
-CMD ["java", "-jar", "target/*.jar"]
+CMD java -jar target/*.jar
