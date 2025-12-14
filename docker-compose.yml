@@ -5,7 +5,7 @@ services:
     build: .
     container_name: backend
     expose:
-      - "3000"
+      - "8080"
     restart: unless-stopped
 
   proxy:
