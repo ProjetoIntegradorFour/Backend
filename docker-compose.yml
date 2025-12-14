@@ -20,3 +20,4 @@ services:
     volumes:
       - ./npm/data:/data
       - ./npm/letsencrypt:/etc/letsencrypt
+      - ./npm/ssl:/etc/ssl/nginx
