@@ -1,4 +1,3 @@
-// src/main/java/com/libapp/backend/controller/TestController.java
 package com.libapp.backend.controller;
 
 import java.util.List;
