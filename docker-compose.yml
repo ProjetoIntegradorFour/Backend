@@ -2,10 +2,10 @@ version: "3.8"
 
 services:
   backend:
-    build: .
+    image: backend-backend
     container_name: backend
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
     restart: unless-stopped
 
   proxy:
