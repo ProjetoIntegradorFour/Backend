@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   backend:
+    build: .
     image: backend-backend
     container_name: backend
     ports:
