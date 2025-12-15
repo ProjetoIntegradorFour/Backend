@@ -1,11 +1,4 @@
--- Clear existing data
-DELETE FROM copy;
-DELETE FROM catalog;
-DELETE FROM user_roles;
-DELETE FROM users;
-DELETE FROM roles;
-
--- Insert default roles
+    -- Insert default roles
 INSERT INTO roles (id, name) VALUES 
 (1, 'ROLE_USER'),
 (2, 'ROLE_ADMIN');
