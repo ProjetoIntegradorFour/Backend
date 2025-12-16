@@ -1,17 +1,21 @@
 package com.libapp.backend.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -29,6 +33,9 @@ public class Catalog {
     @Size(min = 10, max = 13, message = "ISBN deve ter entre 10 e 13 caracteres")
     @Column(unique = true, nullable = false, length = 20)
     private String isbn;
+
+    @OneToMany(mappedBy = "catalog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Copy> copies = new ArrayList<>();
 
     @NotBlank(message = "Título é obrigatório")
     private String title;
@@ -79,6 +86,14 @@ public class Catalog {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+    }
+
+    public List<Copy> getCopies() {
+        return copies;
+    }
+
+    public void setCopies(List<Copy> copies) {
+        this.copies = copies;
     }
 
     public String getTitle() {
@@ -184,4 +199,5 @@ public class Catalog {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.libapp.backend.dto.CatalogSummaryDTO;
 import com.libapp.backend.entity.Catalog;
+import com.libapp.backend.exception.ResourceNotFoundException;
 import com.libapp.backend.exception.ValidationException;
 import com.libapp.backend.repository.CatalogRepository;
 
@@ -47,7 +48,9 @@ public class CatalogService {
     }
 
     public void delete(String isbn) {
-        catalogRepository.deleteByIsbn(isbn);
+        Catalog catalog = catalogRepository.findByIsbn(isbn)
+                .orElseThrow(() -> new ResourceNotFoundException("Catalog", "ISBN", isbn));
+        catalogRepository.delete(catalog);
     }
 
     public Catalog fetchFromIsbnApi(String isbn) {
