@@ -121,6 +121,7 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/users/test").permitAll()
                             .requestMatchers("/api/public/**").permitAll()
                             .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                             .requestMatchers("/api/users/admin/**").hasAuthority("ROLE_ADMIN")
                             .anyRequest().authenticated();
                 });
