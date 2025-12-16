@@ -43,3 +43,4 @@ build/
 # Environment file
 .env
 .env.local
+data.sql
