@@ -107,7 +107,10 @@ public class WebSecurityConfig {
                             "/catalog/**",
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
-                            "/swagger-ui.html").permitAll();
+                            "/swagger-ui.html",
+                            "/error").permitAll();
+
+                    authz.requestMatchers(HttpMethod.OPTIONS, "/admin/**").permitAll();
 
                     boolean isDevelopment = Arrays.asList(env.getActiveProfiles()).contains("dev")
                             || env.getActiveProfiles().length == 0;
@@ -122,6 +125,7 @@ public class WebSecurityConfig {
                             .requestMatchers("/api/public/**").permitAll()
                             .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                             .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers("/admin/catalog/**").hasAuthority("ROLE_ADMIN")
                             .requestMatchers("/api/users/admin/**").hasAuthority("ROLE_ADMIN")
                             .anyRequest().authenticated();
                 });

@@ -17,3 +17,5 @@ INSERT INTO copy (id, catalog_id, status, shelf_id, created_at, updated_at) VALU
 (4, 2, 'AVAILABLE', 'B2-002', NOW(), NOW()),
 (5, 3, 'RESERVED', 'C3-001', NOW(), NOW()),
 (6, 3, 'AVAILABLE', 'C3-002', NOW(), NOW());
+
+ALTER TABLE copy ALTER COLUMN id RESTART WITH 100;

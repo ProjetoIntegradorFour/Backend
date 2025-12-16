@@ -50,7 +50,10 @@ public class CatalogService {
     public void delete(String isbn) {
         Catalog catalog = catalogRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new ResourceNotFoundException("Catalog", "ISBN", isbn));
+        catalog.getCopies().clear();
         catalogRepository.delete(catalog);
+        catalogRepository.flush();
+        log.info("Deleted catalog with ISBN: {} and all associated copies", isbn);
     }
 
     public Catalog fetchFromIsbnApi(String isbn) {
