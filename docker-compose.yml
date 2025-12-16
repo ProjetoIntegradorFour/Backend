@@ -9,7 +9,7 @@ services:
       - "8080:8080"
     environment:
     - SPRING_PROFILES_ACTIVE=prod
-    - RDS_DB_URL=jdbc:mysql:/bancodelivros.cxa6mcuagzip.us-east-1.rds.amazonaws.com:3306/prateleira
+    - RDS_DB_URL=jdbc:mysql://bancodelivros.cxa6mcuagzip.us-east-1.rds.amazonaws.com:3306/prateleira
     - RDS_DB_USER=admin
     - RDS_DB_PASSWORD=camargoreidelas
     restart: unless-stopped
