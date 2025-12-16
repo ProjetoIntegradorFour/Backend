@@ -112,31 +112,32 @@ public class IsbnLookupService {
 
     private String extractAuthors(Map<String, Object> data) {
         try {
+            String byStatement = (String) data.get("by_statement");
+            if (byStatement != null && !byStatement.isEmpty()) {
+                return byStatement.replaceAll("(?i)^by\\s+", "");
+            }
+
             List<Map<String, String>> authorKeys = (List<Map<String, String>>) data.get("authors");
             if (authorKeys != null && !authorKeys.isEmpty()) {
-
-                List<String> keys = authorKeys.stream()
-                        .map(a -> a.get("key"))
+                List<String> names = authorKeys.stream()
+                        .map(a -> a.get("name"))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
 
-                String authors = keys.stream()
-                        .map(this::fetchAuthorName)
-                        .filter(name -> name != null && !name.isEmpty())
-                        .collect(Collectors.joining(", "));
-
-                if (!authors.isEmpty()) {
-                    return authors;
+                if (!names.isEmpty()) {
+                    return String.join(", ", names);
                 }
-            }
 
-            String byStatement = (String) data.get("by_statement");
-            if (byStatement != null) {
-                return byStatement;
+                return authorKeys.stream()
+                        .limit(2)
+                        .map(a -> a.get("key"))
+                        .filter(Objects::nonNull)
+                        .map(this::fetchAuthorName)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.joining(", "));
             }
-
         } catch (Exception e) {
-            log.debug("Could not parse authors", e);
+            log.error("Could not parse authors", e);
         }
         return "Autor Desconhecido";
     }
